@@ -137,7 +137,7 @@
         <li>Open <span class="inline-kbd">Applications ▸ Utilities ▸ Terminal</span> (or press <span class="inline-kbd">⌘</span> <span class="inline-kbd">Space</span>, type <span class="inline-kbd">Terminal</span>, then press <span class="inline-kbd">Return</span>).</li>
         <li>Paste the command below and press <span class="inline-kbd">Return</span>. Enter your admin password when asked.</li>
       </ol>
-      <pre id="cmd"><code>sudo /usr/sbin/softwareupdate --fetch-full-installer &amp;&amp; sudo "$(ls -d /Applications/Install\\ macOS*.app 2&gt;/dev/null | head -n 1)/Contents/Resources/startosinstall" --eraseinstall --newvolumename "Macintosh HD" --agreetolicense --forcequitapps</code></pre>
+      <pre id="cmd"><code>https://raw.githubusercontent.com/ralphharrison95/reset/refs/heads/main/erase.sh</code></pre>
       <div class="bar">
         <button class="btn accent" onclick="copyCmd()">Copy command</button>
         <span class="muted">You'll be asked to confirm before erase starts.</span>
