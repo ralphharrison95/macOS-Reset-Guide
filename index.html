@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Erase & Reinstall macOS — One Command</title>
+  <meta name="description" content="Clean, Apple-style guide to factory reset your MacBook with a single Terminal command." />
+  <style>
+    :root{
+      --bg:#ffffff;
+      --ink:#111111;
+      --muted:#6e6e73;
+      --line:#e6e6e6;
+      --card:#f5f5f7;
+      --accent:#0071e3; /* Apple blue */
+      --code:#f2f2f2;
+      --danger:#ff3b30;
+      --shadow:0 1px 2px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.06);
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#000000;
+        --ink:#f5f5f7;
+        --muted:#a1a1a6;
+        --line:#242426;
+        --card:#0a0a0a;
+        --accent:#0a84ff;
+        --code:#0f0f12;
+        --danger:#ff453a;
+        --shadow:0 1px 2px rgba(0,0,0,.6), 0 8px 24px rgba(0,0,0,.36);
+      }
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font:16px/1.5 -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", Segoe UI, Roboto, Helvetica, Arial, system-ui, Apple Color Emoji, Segoe UI Emoji;
+      color:var(--ink);
+      background:var(--bg);
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+      letter-spacing:-.01em;
+    }
+    .nav{
+      max-width:1060px;margin:0 auto;padding:14px 20px;
+      display:flex;align-items:center;justify-content:space-between;
+    }
+    .nav .brand{
+      font-weight:700; letter-spacing:-.02em; font-size:15px;
+    }
+    .nav a{color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:8px}
+    .nav a:hover{background:var(--card);color:var(--ink)}
+    .wrap{max-width:900px;margin:0 auto;padding:0 20px}
+    .hero{padding:48px 0 10px;text-align:center}
+    h1{font-size:clamp(28px,5vw,48px);line-height:1.05;margin:0 0 10px;letter-spacing:-.03em}
+    .lead{color:var(--muted);font-size:clamp(16px,2.5vw,18px);margin:0 auto;max-width:62ch}
+    .cta-bar{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:22px}
+    .btn{
+      appearance:none;border:1px solid transparent;background:var(--ink);
+      color:var(--bg);padding:12px 18px;border-radius:980px;font-weight:700;cursor:pointer;
+      transition:transform .15s ease, background .2s ease, color .2s ease, border-color .2s ease;
+      box-shadow:var(--shadow);
+    }
+    .btn.secondary{background:transparent;color:var(--ink);border-color:var(--line)}
+    .btn.accent{background:var(--accent)}
+    .btn:hover{transform:translateY(-1px)}
+    section{padding:26px 0;border-top:1px solid var(--line)}
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;padding:18px;box-shadow:var(--shadow);
+    }
+    .callout{
+      border-left:4px solid var(--danger);padding:14px 16px;background:var(--card);
+      border-radius:14px;border:1px solid var(--line);
+    }
+    h2{font-size:clamp(20px,3.2vw,28px);margin:0 0 12px;letter-spacing:-.02em}
+    h3{margin:0 0 8px;font-size:18px}
+    ol,ul{margin:0;padding-left:18px}
+    .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+    pre{
+      background:var(--code);
+      border:1px solid var(--line);
+      border-radius:14px;padding:14px;overflow:auto;margin:12px 0 8px;
+    }
+    code{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco, "Liberation Mono", monospace;font-size:14px}
+    .muted{color:var(--muted)}
+    .tiny{font-size:13px}
+    .center{display:grid;place-items:center}
+    .caps{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+    .divider{height:1px;background:var(--line);margin:24px 0}
+    .inline-kbd{display:inline-block;border:1px solid var(--line);border-radius:8px;padding:2px 6px;font-family:ui-monospace}
+    .foot{text-align:center;color:var(--muted);font-size:13px;margin:10px 0 40px}
+  </style>
+</head>
+<body>
+  <nav class="nav" aria-label="Top">
+    <div class="brand">macOS Reset Guide</div>
+    <div>
+      <a href="#run">Command</a>
+      <a href="#prep">Prepare</a>
+      <a href="#after">After</a>
+      <a href="#help">Help</a>
+    </div>
+  </nav>
+
+  <main class="wrap">
+    <header class="hero">
+      <div class="caps">Factory Reset</div>
+      <h1>Erase & Reinstall macOS with One Terminal Command</h1>
+      <p class="lead">Read the warning, copy the command, and let your Mac do the rest.</p>
+    </header>
+
+    <section id="prep" aria-labelledby="prep-title">
+      <h2 id="prep-title">Before you start</h2>
+      <div class="callout" role="alert">
+        <strong>Warning:</strong> This will permanently erase <em>all</em> data on your Mac. Proceed only if you own this device and have a complete backup.
+      </div>
+      <div class="grid" style="margin-top:14px">
+        <div class="card">
+          <h3>Back up</h3>
+          <p class="muted">Use Time Machine or your preferred backup tool.</p>
+        </div>
+        <div class="card">
+          <h3>Power & Internet</h3>
+          <p class="muted">Keep your Mac plugged in and connected to a stable network.</p>
+        </div>
+        <div class="card">
+          <h3>Sign out (optional)</h3>
+          <p class="muted">If you’re selling or giving it away: sign out of Apple ID and turn off Find My to avoid Activation Lock.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="run" aria-labelledby="run-title">
+      <h2 id="run-title">Run the command</h2>
+      <ol>
+        <li>Open <span class="inline-kbd">Applications ▸ Utilities ▸ Terminal</span> (or press <span class="inline-kbd">⌘</span> <span class="inline-kbd">Space</span>, type <span class="inline-kbd">Terminal</span>, then press <span class="inline-kbd">Return</span>).</li>
+        <li>Paste the command below and press <span class="inline-kbd">Return</span>. Enter your admin password when asked.</li>
+      </ol>
+      <pre id="cmd"><code>sudo /usr/sbin/softwareupdate --fetch-full-installer &amp;&amp; sudo "$(ls -d /Applications/Install\\ macOS*.app 2&gt;/dev/null | head -n 1)/Contents/Resources/startosinstall" --eraseinstall --newvolumename "Macintosh HD" --agreetolicense --forcequitapps</code></pre>
+      <div class="bar">
+        <button class="btn accent" onclick="copyCmd()">Copy command</button>
+        <span class="muted">You'll be asked to confirm before erase starts.</span>
+      </div>
+    </section>
+
+    <section id="after" aria-labelledby="after-title">
+      <h2 id="after-title">What happens next</h2>
+      <ul>
+        <li>The macOS installer downloads if needed.</li>
+        <li>Your Mac restarts and erases the internal disk.</li>
+        <li>macOS installs cleanly. Setup Assistant appears.</li>
+      </ul>
+      <div class="divider"></div>
+      <h3>Choose a specific macOS version</h3>
+      <p class="muted tiny">First fetch the version, then run the main command:</p>
+      <pre><code>sudo /usr/sbin/softwareupdate --fetch-full-installer --full-installer-version 15.1</code></pre>
+    </section>
+
+    <section id="help" aria-labelledby="help-title">
+      <h2 id="help-title">Troubleshooting</h2>
+      <ul>
+        <li><strong>No installer found</strong> — run the command again, or fetch a specific version as shown above.</li>
+        <li><strong>“command not found”</strong> — verify the installer exists in <code>/Applications</code>: <code>ls /Applications | grep "Install macOS"</code>.</li>
+        <li><strong>Activation Lock</strong> — you’ll need the Apple ID credentials used previously.</li>
+      </ul>
+    </section>
+
+    <p class="foot">Use responsibly on devices you own. This page is not affiliated with Apple.</p>
+  </main>
+
+  <script>
+    function copyCmd(){
+      const code = document.getElementById('cmd').innerText.trim();
+      if(navigator.clipboard && window.isSecureContext){
+        navigator.clipboard.writeText(code).then(()=>flashCopied(),()=>fallbackCopy(code));
+      }else{ fallbackCopy(code); }
+    }
+    function fallbackCopy(text){
+      const ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta);
+      ta.select(); try{document.execCommand('copy');}catch(e){}
+      document.body.removeChild(ta); flashCopied();
+    }
+    function flashCopied(){
+      const btns = document.getElementsByClassName('btn');
+      if(btns.length){ const b = btns[0]; const t = b.textContent; b.textContent='Copied!'; setTimeout(()=>b.textContent=t,1400); }
+    }
+  </script>
+</body>
+</html>
